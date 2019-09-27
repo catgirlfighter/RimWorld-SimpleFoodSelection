@@ -57,7 +57,7 @@ namespace SimpleFoodSelection.Searching
                         traceOutput?.AppendLine($"Not using food tier {foodTier.Name}, assuming others are worse and aborting here");
                         return new FoodSearchResult { Success = true };
                     }
-
+                      
                     traceOutput?.AppendLine($"Searching food tier {foodTier.Name}");
                     foreach (var foodSearchGroup in foodSearchGroups)
                     {   // foodSearchGroup e.g. Inventory/HomeArea
@@ -104,9 +104,16 @@ namespace SimpleFoodSelection.Searching
                 return false;
             }
 
+            if ((!parameters.Getter.RaceProps.ToolUser || !parameters.Getter.health.capacities.CapableOf(PawnCapacityDefOf.Manipulation) || !parameters.CanUseInventory) 
+                && parameters.Getter.inventory.Contains(item.Thing))
+            {
+                traceOutput?.AppendLine($"Rejecting {item.Thing}: {parameters.Getter} cannot use item from his invenory in this situation");
+                return false;
+            }
+
             if (!parameters.Getter.CanReserve(item.Thing, stackCount: 1))
             {
-                traceOutput?.AppendLine($"Rejecting {item.Thing}: {parameters.Getter} cannot reserve any from stack");
+                traceOutput?.AppendLine($"Rejecting {item.Thing}: {parameters.Getter} cannot reserve any from stack"); 
                 return false;
             }
 
